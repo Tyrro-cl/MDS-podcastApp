@@ -12,17 +12,22 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements('user_id')->unique();
+            $table->bigIncrements('user_id'); // ->unique() not necessary
             $table->string('name');
             $table->string('last_name');
-            $table->string();
+            $table->string('password', 60);
+            $table->string('email')->unique();
+            $table->rememberToken();
+            $table->timestamps();
             //
 
         });
         Schema::create('podcasts', function(Blueprint $table){
+            $table->bigIncrements('post_id'); // ->unique();
             $table->foreignId('user_id')->constrained();
-            $table->
-
+            $table->string('title');
+            $table->string('description');
+            $table->timestamps();
         });
     }
 
@@ -32,7 +37,21 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+            $table->dropColumn('name');
+            $table->dropColumn('last_name');
+            $table->dropColumn('password');
+            $table->dropColumn('email');
+            $table->dropColumn('remember_token');
+            $table->dropTimestamps();
             //
+        });
+        Schema::table('podcasts', function(Blueprint $table){
+            $table->dropColumn('post_id');
+            $table->dropForeign('user_id');
+            $table->dropColumn('title');
+            $table->dropColumn('description');
+            $table->droptimestamps();
         });
     }
 };
